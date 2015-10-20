@@ -25,7 +25,7 @@ int uart0_send_byte(char data, FILE* UNUSED(stream))
     {
         uart0_putc('\r');
     }
-    uart0_putc(data);
+    uart0_putc((uint8_t)data);
     return 0;
 }
 
@@ -70,7 +70,7 @@ int main (void)
         PORTD &= ~_BV(PORTD6);
         _delay_ms(BLINK_DELAY_MS);
 
-        printf("Hello, World!");
+        printf("Hello, World!\n");
     }
 }
 #pragma clang diagnostic pop

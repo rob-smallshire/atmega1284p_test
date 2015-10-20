@@ -31,7 +31,7 @@ set(AVR_UPLOADTOOL_OPTIONS -B 5)  # Bitclock 5 us
 ##########################################################################
 set(AVR_MCU atmega1284p)  # This is used by avr-gcc
 set(AVR_H_FUSE 0xd9)
-set(AVR_L_FUSE 0xff)
+set(AVR_L_FUSE 0xf7)
 set(AVR_E_FUSE 0x04) # This is not yet passed to the programmer!
 
 ### END TOOLCHAIN SETUP AREA #############################################
