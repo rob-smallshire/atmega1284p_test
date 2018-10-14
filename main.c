@@ -43,7 +43,7 @@ static FILE uart0_stream = FDEV_SETUP_STREAM(
 
 
 enum {
- BLINK_DELAY_MS = 1000,
+ BLINK_DELAY_MS = 500,
 };
 
 
@@ -58,16 +58,17 @@ int main (void)
     // USB Serial 0
     uart0_init(UART_BAUD_SELECT(9600, F_CPU));
 
-    /* set pin 6 of PORTD for output*/
-    DDRD |= _BV(DDD6);
+    /* set bit 0 of PORTC (pin 20) for output*/
+    DDRC |= _BV(DDC0);
+
 
     while (1) {
         /* set pin 20 high to turn led on */
-        PORTD |= _BV(PORTD6);
+        PORTC |= _BV(PORTC0);
         _delay_ms(BLINK_DELAY_MS);
 
         /* set pin 20 low to turn led off */
-        PORTD &= ~_BV(PORTD6);
+        PORTC &= ~_BV(PORTC0);
         _delay_ms(BLINK_DELAY_MS);
 
         printf("Hello, World!\n");
