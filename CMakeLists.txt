@@ -11,6 +11,8 @@
 
 cmake_minimum_required(VERSION 2.8)
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
 ### TOOLCHAIN SETUP AREA #################################################
 # Set any variables used in the toolchain prior project() call. In that
 # case they are already set and used.
