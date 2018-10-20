@@ -48,7 +48,7 @@ int uart0_send_byte(char data, FILE* UNUSED(stream))
 
 int uart0_receive_byte(FILE* UNUSED(stream))
 {
-    uint8_t data = uart0_getc();
+    uint8_t data = (uint8_t) uart0_getc();
     return data;
 }
 
@@ -60,7 +60,52 @@ static FILE uart0_stream = FDEV_SETUP_STREAM(
 
 
 enum {
- BLINK_DELAY_MS = 500,
+ BLINK_DELAY_MS = 5000,
+};
+
+enum {
+    SENSE0 = PORTA0,
+    SENSE1 = PORTA1,
+    SENSE2 = PORTA2,
+    SENSE3 = PORTA3,
+    NFAULT0 = PORTA4,
+    NFAULT1 = PORTA5,
+    NFAULT2 = PORTA6,
+    NFAULT3 = PORTA7,
+};
+
+enum {
+    ENC0A  = PORTB0,
+    ENC1A  = PORTB1,
+    ENC2A  = PORTB2,
+    ENC3A  = PORTB3,
+    ENC0B  = PORTB4,
+    ENC1B  = PORTB5,
+    ENC2B  = PORTB6,
+    ENC3B  = PORTB7
+};
+
+enum {
+    SCL    = PORTC0,  // Only used as GPIO during test
+    SDA    = PORTC1,  // Only used as GPIO during test
+    BRAKE1 = PORTC2,
+    DIR1   = PORTC3,
+    BRAKE2 = PORTC4,
+    DIR2   = PORTC5,
+    BRAKE3 = PORTC6,
+    DIR3   = PORTC7
+};
+
+
+enum {
+    RX     = PORTD0,
+    TX     = PORTD1,
+    BRAKE0 = PORTD2,
+    DIR0   = PORTD3,
+    PWM0   = PORTD4,
+    PWM1   = PORTD5,
+    PWM2   = PORTD6,
+    PWM3   = PORTD7
 };
 
 
@@ -75,17 +120,46 @@ int main (void)
     // USB Serial 0
     uart0_init(UART_BAUD_SELECT(9600, F_CPU));
 
-    /* set bit 0 of PORTC (pin 20) for output*/
-    DDRC |= _BV(DDC0);
+    // PORTA
+    DDRA = 0x00; // All inputs
+    PORTA =0x00; // No pull-ups
 
+    // PORTB
+    DDRB = 0x00; // All inputs
+    PORTB = 0x00; // No pull-ups
+
+
+    // PORTC
+    DDRC = _BV(SCL) | _BV(SDA) | _BV(BRAKE1) | _BV(DIR1) | _BV(BRAKE2) | _BV(DIR2) | _BV(BRAKE3) | _BV(DIR3);
+    PORTC = 0x00; // All off
+
+    // PORTD
+    DDRD = _BV(RX) | _BV(TX) | _BV(BRAKE0) | _BV(DIR0) | _BV(PWM0) | _BV(PWM1) | _BV(PWM2) | _BV(PWM3);
+    PORTD = 0x00; // All off
 
     while (1) {
+        PORTD &= ~_BV(DIR0);
+
         /* set pin 20 high to turn led on */
-        PORTC |= _BV(PORTC0);
+        PORTC |= _BV(SCL);
+        PORTD |= _BV(PWM0);
         _delay_ms(BLINK_DELAY_MS);
 
         /* set pin 20 low to turn led off */
-        PORTC &= ~_BV(PORTC0);
+        PORTC &= ~_BV(SCL);
+        PORTD &= ~_BV(PWM0);
+        _delay_ms(BLINK_DELAY_MS);
+
+        PORTD |= _BV(DIR0);
+
+        /* set pin 20 high to turn led on */
+        PORTC |= _BV(SCL);
+        PORTD |= _BV(PWM0);
+        _delay_ms(BLINK_DELAY_MS);
+
+        /* set pin 20 low to turn led off */
+        PORTC &= ~_BV(SCL);
+        PORTD &= ~_BV(PWM0);
         _delay_ms(BLINK_DELAY_MS);
 
         printf("Hello, World!\n");
